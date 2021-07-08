@@ -122,10 +122,14 @@ const executeCommands = (start, startDirection, gridSize, commands) => {
     return []
   }
 
-  let direction = startDirection
-  let position = start
+  const initialMovement = {
+    position: start,
+    direction: startDirection
+  }
 
-  const trace = commands.map(command => {
+  const trace = commands.reduce((prevMovement, command) => {
+    let { position, direction } = prevMovement
+
     direction = [COMMANDS.r, COMMANDS.l].includes(command)
       ? turn(direction, command)
       : direction
@@ -135,10 +139,10 @@ const executeCommands = (start, startDirection, gridSize, commands) => {
       position = nextPosition
     }
 
-    return position
-  })
+    return { position, direction }
+  }, initialMovement)
 
-  return lastElement(trace)
+  return trace.position
 }
 
 module.exports = {
