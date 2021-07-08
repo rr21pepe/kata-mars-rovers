@@ -117,6 +117,22 @@ const getNextPosition = (position, direction, command) => {
   return nextPosition
 }
 
+const getLastMovement = (initialMovement, commands) => commands.reduce((prevMovement, command) => {
+  let { position, direction, gridSize } = prevMovement
+
+  direction = [COMMANDS.r, COMMANDS.l].includes(command)
+    ? turn(direction, command)
+    : direction
+
+  const nextPosition = getNextPosition(position, direction, command)
+
+  if(isContainedInGrid(nextPosition, gridSize)) {
+    position = nextPosition
+  }
+
+  return { position, direction, gridSize }
+}, initialMovement)
+
 const executeCommands = (start, startDirection, gridSize, commands) => {
   if(!validateParams(start, startDirection, gridSize, commands)) {
     return []
@@ -124,25 +140,13 @@ const executeCommands = (start, startDirection, gridSize, commands) => {
 
   const initialMovement = {
     position: start,
-    direction: startDirection
+    direction: startDirection,
+    gridSize: gridSize
   }
 
-  const trace = commands.reduce((prevMovement, command) => {
-    let { position, direction } = prevMovement
+  const lastMovement = getLastMovement(initialMovement, commands)
 
-    direction = [COMMANDS.r, COMMANDS.l].includes(command)
-      ? turn(direction, command)
-      : direction
-    const nextPosition = getNextPosition(position, direction, command)
-
-    if(isContainedInGrid(nextPosition, gridSize)) {
-      position = nextPosition
-    }
-
-    return { position, direction }
-  }, initialMovement)
-
-  return trace.position
+  return lastMovement.position
 }
 
 module.exports = {
