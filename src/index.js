@@ -50,8 +50,6 @@ const moveForwardsOrBackwards = (position, direction, command) => {
   return nextCell[direction](position)
 }
 
-const lastElement = arr => arr[arr.length - 1]
-
 const isValidCommand = command => COMMANDS.hasOwnProperty(command)
 
 const isArray = arr => Array.isArray(arr)
@@ -68,9 +66,9 @@ const isContainedInGrid = (coord, gridSize) => {
 }
 
 const validateStartingPoint = (start, gridSize) => {
-  if(!isArray(start)) return false
-  if(!start.every(isPositiveCoord)) return false
-  if(!isContainedInGrid(start, gridSize)) return false
+  if (!isArray(start)) return false
+  if (!start.every(isPositiveCoord)) return false
+  if (!isContainedInGrid(start, gridSize)) return false
 
   return true
 }
@@ -78,16 +76,16 @@ const validateStartingPoint = (start, gridSize) => {
 const validateDirection = direction => DIRECTIONS.hasOwnProperty(direction)
 
 const validateGridSize = gridSize => {
-  if(!isArray(gridSize)) return false
-  if(!gridSize.every(isPositiveCoord)) return false
+  if (!isArray(gridSize)) return false
+  if (!gridSize.every(isPositiveCoord)) return false
 
   return true
 }
 
 const validateCommands = commands => {
-  if(!isArray(commands)) return false
-  if(!commands.every(isChar)) return false
-  if(!commands.every(isValidCommand)) return false
+  if (!isArray(commands)) return false
+  if (!commands.every(isChar)) return false
+  if (!commands.every(isValidCommand)) return false
 
   return true
 }
@@ -108,7 +106,7 @@ const validateParams = (start, direction, gridSize, commands) => {
 
 const getNextPosition = (position, direction, command) => {
   let nextPosition = [...position]
-  switch(command) {
+  switch (command) {
     case COMMANDS.f:
     case COMMANDS.b:
       nextPosition = moveForwardsOrBackwards(position, direction, command); break
@@ -120,13 +118,14 @@ const getNextPosition = (position, direction, command) => {
 const getLastMovement = (initialMovement, commands) =>
   commands.reduce((prevMovement, command) => {
     let { position, direction, gridSize } = prevMovement
+
     direction = [COMMANDS.r, COMMANDS.l].includes(command)
       ? turn(direction, command)
       : direction
 
     const nextPosition = getNextPosition(position, direction, command)
 
-    if(isContainedInGrid(nextPosition, gridSize)) {
+    if (isContainedInGrid(nextPosition, gridSize)) {
       position = nextPosition
     }
 
@@ -134,7 +133,7 @@ const getLastMovement = (initialMovement, commands) =>
   }, initialMovement)
 
 const executeCommands = (start, startDirection, gridSize, commands) => {
-  if(!validateParams(start, startDirection, gridSize, commands)) {
+  if (!validateParams(start, startDirection, gridSize, commands)) {
     return []
   }
 
