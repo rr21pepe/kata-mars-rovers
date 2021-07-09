@@ -117,21 +117,21 @@ const getNextPosition = (position, direction, command) => {
   return nextPosition
 }
 
-const getLastMovement = (initialMovement, commands) => commands.reduce((prevMovement, command) => {
-  let { position, direction, gridSize } = prevMovement
+const getLastMovement = (initialMovement, commands) =>
+  commands.reduce((prevMovement, command) => {
+    let { position, direction, gridSize } = prevMovement
+    direction = [COMMANDS.r, COMMANDS.l].includes(command)
+      ? turn(direction, command)
+      : direction
 
-  direction = [COMMANDS.r, COMMANDS.l].includes(command)
-    ? turn(direction, command)
-    : direction
+    const nextPosition = getNextPosition(position, direction, command)
 
-  const nextPosition = getNextPosition(position, direction, command)
+    if(isContainedInGrid(nextPosition, gridSize)) {
+      position = nextPosition
+    }
 
-  if(isContainedInGrid(nextPosition, gridSize)) {
-    position = nextPosition
-  }
-
-  return { position, direction, gridSize }
-}, initialMovement)
+    return { position, direction, gridSize }
+  }, initialMovement)
 
 const executeCommands = (start, startDirection, gridSize, commands) => {
   if(!validateParams(start, startDirection, gridSize, commands)) {
@@ -144,9 +144,9 @@ const executeCommands = (start, startDirection, gridSize, commands) => {
     gridSize: gridSize
   }
 
-  const lastMovement = getLastMovement(initialMovement, commands)
+  const { position: lastCoord } = getLastMovement(initialMovement, commands)
 
-  return lastMovement.position
+  return lastCoord
 }
 
 module.exports = {
